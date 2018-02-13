@@ -27,6 +27,7 @@ var getVal = getUrlVars();
 if (getVal.partday) {
   //URLパラメータの取得に成功した場合
   var today_yyyymmdd = getVal.partday;
+  var yesterday_yyyymmdd = String(Number(getVal.partday)-1);
 } else {
   //URLパラメータの取得に失敗した場合
   var now = new Date();
