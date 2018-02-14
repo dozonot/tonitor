@@ -10,7 +10,9 @@
     <script src='https://code.jquery.com/jquery-2.1.4.min.js'></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1/i18n/jquery.ui.datepicker-ja.min.js"></script>
-    <script src="http://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/highcharts-more.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
     <link type="text/css" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1/themes/redmond/jquery-ui.css" rel="stylesheet" />
     <script>
       $(function() {
@@ -26,13 +28,13 @@
     <div>
       <div class='container'>
         <div class="row">
-          <div class="nine columns">
+          <div class="seven columns">
             <h1>Tonitor</h1>
             <p>
-	      Tonitor is a temperature monitoring system for Dozono.<br>
+	      Tonitor is the temperature monitoring system for Dozono.<br>
             </p>
           </div>
-          <div class="three columns">
+          <div class="five columns">
             <form>
                 <label>Search :</label>
                 <input type="text" name='partday' id="partday" size="8" readonly="readonly">
@@ -40,8 +42,15 @@
             </form>
           </div>
         </div>
-        <div id="today"></div>
-        <div id="yesterday"></div>
+        <div class="row">
+          <div class="six columns"><div id="today"></div></div>
+          <div class="six columns"><div id="realtime"></div></div>
+        </div>
+        <br>
+        <div class="row">
+          <div class="six columns"><div id="yesterday"></div></div>
+          <div class="six columns"><div id="month"></div>
+        </div>
       </div>
       <footer>
         <p align='center'>&copy; 2017 Dozono Powered by The Weather Company</p>

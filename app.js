@@ -88,11 +88,13 @@ req.send( "" );
 // Today gragh
 Highcharts.chart('today', {
     title: {
-        text: todayDate+'の温度(Temperature)'
+        text: todayDate+'の温度'
     },
-    subtitle: {
-        text: 'Source: thesolarfoundation.com'
+    chart: {
+        type: 'area',
+        backgroundColor: '#FAFAFA'
     },
+    colors: ['#FE9A2E', '#81F79F'],
     yAxis: {
         title: {
             text: 'Temperature'
@@ -101,26 +103,15 @@ Highcharts.chart('today', {
     xAxis: {
         title: {
             text: 'Time'
-        }
-    },
-    legend: {
-        layout: 'vertical',
-        align: 'right',
-        verticalAlign: 'middle'
-    },
-    plotOptions: {
-        series: {
-            label: {
-                connectorAllowed: false
-            },
-            pointStart: 0
-        }
+        },
+	max: 24,
+	tickInterval: 3
     },
     series: [{
-        name: 'ラック内温度(Rack temperature)',
+        name: 'ラック内温度',
         data: JSON.parse("[" + todayRtemp + "]")
     }, {
-        name: '外気温(Tokyo\'s temperature)',
+        name: '外気温(品川区)',
         data: JSON.parse("[" + todayAtemp + "]")
     }],
 });
@@ -128,10 +119,147 @@ Highcharts.chart('today', {
 // Yesterday gragh
 Highcharts.chart('yesterday', {
     title: {
-        text: yesterdayDate+'の温度(Temperature)'
+        text: '前日('+yesterdayDate+')の温度'
     },
-    subtitle: {
-        text: 'Source: thesolarfoundation.com'
+    chart: {
+        type: 'area',
+        backgroundColor: '#F2F2F2'
+    },
+    colors: ['#FE9A2E', '#81F79F'],
+    yAxis: {
+        title: {
+            text: 'Temperature'
+        }
+    },
+    xAxis: {
+        title: {
+            text: 'Time'
+        },
+	max: 24,
+	tickInterval: 3
+    },
+    plotOptions: {
+        series: {
+            label: {
+                connectorAllowed: false
+            }
+        }
+    },
+    series: [{
+        name: 'ラック内温度',
+        data: JSON.parse("[" + yesterdayRtemp + "]")
+    }, {
+        name: '外気温(品川区)',
+        data: JSON.parse("[" + yesterdayAtemp + "]")
+    }],
+});
+
+// realtime gragh
+Highcharts.chart('realtime', {
+
+    chart: {
+        type: 'gauge',
+        //plotBackgroundColor: null,
+        //plotBackgroundImage: null,
+        backgroundColor: '#F2F2F2',
+        plotBorderWidth: 0,
+        plotShadow: false
+    },
+
+    title: {
+        text: '現在の室温'
+    },
+
+    pane: {
+        startAngle: -150,
+        endAngle: 150,
+        background: [{
+            backgroundColor: {
+                linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
+                stops: [
+                    [0, '#FFF'],
+                    [1, '#333']
+                ]
+            },
+            borderWidth: 0,
+            outerRadius: '109%'
+        }, {
+            backgroundColor: {
+                linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
+                stops: [
+                    [0, '#333'],
+                    [1, '#FFF']
+                ]
+            },
+            borderWidth: 1,
+            outerRadius: '107%'
+        }, {
+            // default background
+        }, {
+            backgroundColor: '#DDD',
+            borderWidth: 0,
+            outerRadius: '105%',
+            innerRadius: '103%'
+        }]
+    },
+
+    yAxis: {
+        min: -10,
+        max: 50,
+
+        minorTickInterval: 'auto',
+        minorTickWidth: 1,
+        minorTickLength: 10,
+        minorTickPosition: 'inside',
+        minorTickColor: '#666',
+
+        tickPixelInterval: 30,
+        tickWidth: 2,
+        tickPosition: 'inside',
+        tickLength: 10,
+        tickColor: '#666',
+        labels: {
+            step: 2,
+            rotation: 'auto'
+        },
+        title: {
+            text: '℃'
+        },
+        plotBands: [{
+            from: -10,
+            to: 0,
+            color: '#58ACFA' // brue
+        }, {
+            from: 0,
+            to: 25,
+            color: '#55BF3B' // green
+        }, {
+            from: 25,
+            to: 35,
+            color: '#DDDF0D' // yellow
+        }, {
+            from: 35,
+            to: 50,
+            color: '#DF5353' // red
+        }]
+    },
+    series: [{
+        name: 'Temperature',
+        data: JSON.parse("["+Number(todayRtemp[todayRtemp.length-1])+"]"),
+        tooltip: {
+            valueSuffix: ' ℃'
+        }
+    }]
+});
+
+// Month graph
+Highcharts.chart('month', {
+    title: {
+        text: '月間の温度'
+    },
+    chart: {
+        type: 'line',
+        backgroundColor: '#FAFAFA'
     },
     yAxis: {
         title: {
@@ -141,27 +269,19 @@ Highcharts.chart('yesterday', {
     xAxis: {
         title: {
             text: 'Time'
-        }
-    },
-    legend: {
-        layout: 'vertical',
-        align: 'right',
-        verticalAlign: 'middle'
-    },
-    plotOptions: {
-        series: {
-            label: {
-                connectorAllowed: false
-            },
-            pointStart: 0
-        }
+        },
+	max: 24,
+	tickInterval: 3
     },
     series: [{
-        name: 'ラック内温度(Rack temperature)',
-        data: JSON.parse("[" + yesterdayRtemp + "]")
+        name: '最大気温',
+        data: JSON.parse("[" + todayRtemp + "]")
     }, {
-        name: '外気温(Tokyo\'s temperature)',
-        data: JSON.parse("[" + yesterdayAtemp + "]")
+        name: '最低気温',
+        data: JSON.parse("[" + todayAtemp + "]")
+    }, {
+        name: '平均気温',
+        data: JSON.parse("[" + todayAtemp + "]")
     }],
 });
 
