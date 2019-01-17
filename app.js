@@ -1,4 +1,4 @@
-//配列の初期化
+// Initialize var
 var arraySorttime = [];
 var todayRtemp = [];
 var todayAtemp = [];
@@ -8,7 +8,7 @@ var tonitor = {
   poolId: 'ap-northeast-1:3faa8e7d-fbc1-48ba-89d8-7e569539e837'
 };
 
-//URLパラメータの取得
+// Get URL params
 var getUrlVars = function(){
   var vars = {};
   var param = location.search.substring(1).split('&');
@@ -23,19 +23,19 @@ var getUrlVars = function(){
 };
 
 var getVal = getUrlVars();
-//URLパラメータ有無確認
+// Check URL params
 if (getVal.partday) {
-  //URLパラメータの取得に成功した場合
+  // Success
   var today_yyyymmdd = getVal.partday;
   var yesterday_yyyymmdd = String(Number(getVal.partday)-1);
 } else {
-  //URLパラメータの取得に失敗した場合
+  // Failed
   var now = new Date();
   var today_yyyymmdd = now.getFullYear()+( "0"+( now.getMonth()+1 ) ).slice(-2)+( "0"+now.getDate() ).slice(-2);
   var yesterday_yyyymmdd = now.getFullYear()+( "0"+( now.getMonth()+1 ) ).slice(-2)+( "0"+(now.getDate()-1) ).slice(-2);
 }
 
-// グラフタイトル用の日時作成
+// Generate date
 var todayDate = today_yyyymmdd.slice(0,4) + "年";
 todayDate += today_yyyymmdd.slice(4,6) + "月";
 todayDate += today_yyyymmdd.slice(-2) + "日";
@@ -43,13 +43,13 @@ var yesterdayDate = yesterday_yyyymmdd.slice(0,4) + "年";
 yesterdayDate += yesterday_yyyymmdd.slice(4,6) + "月";
 yesterdayDate += yesterday_yyyymmdd.slice(-2) + "日";
 
-// API Gateway用URLの作成
-var url = 'https://n6t2fjv1wd.execute-api.ap-northeast-1.amazonaws.com/v1/tonitor' + '?partday=' + today_yyyymmdd 
-// GETリクエスト
+// Create API Gateway URL for today
+var url = 'https://n6t2fjv1wd.execute-api.ap-northeast-1.amazonaws.com/v2/tonitor/' + today_yyyymmdd 
+// Get request
 var req = new XMLHttpRequest();
 req.onreadystatechange = function(){
   if( req.readyState == 4 && req.status == 200 ){
-    //JSON取得成功時の処理
+    // Success
     obj = req.responseText;
     var jsonText = JSON.parse(obj);
     for(var i in jsonText['Items']){
@@ -58,19 +58,19 @@ req.onreadystatechange = function(){
       todayAtemp.push(jsonText['Items'][i]['atemp']['N']);
     }
   } else {
-    //JSON取得失敗時の処理
+    // Failed
   }
 }
 req.open( 'GET', url, false );
 req.send( "" );
 
-// API Gateway用URLの作成
-var url = 'https://n6t2fjv1wd.execute-api.ap-northeast-1.amazonaws.com/v1/tonitor' + '?partday=' + yesterday_yyyymmdd 
-// GETリクエスト
+// Create API Gateway URL for yesterday
+var url = 'https://n6t2fjv1wd.execute-api.ap-northeast-1.amazonaws.com/v2/tonitor/' + yesterday_yyyymmdd 
+// Get request
 var req = new XMLHttpRequest();
 req.onreadystatechange = function(){
   if( req.readyState == 4 && req.status == 200 ){
-    //JSON取得成功時の処理
+    // Success
     obj = req.responseText;
     var jsonText = JSON.parse(obj);
     for(var i in jsonText['Items']){
@@ -79,7 +79,7 @@ req.onreadystatechange = function(){
       yesterdayAtemp.push(jsonText['Items'][i]['atemp']['N']);
     }
   } else {
-    //JSON取得失敗時の処理
+    // Failed
   }
 }
 req.open( 'GET', url, false );
@@ -252,69 +252,36 @@ Highcharts.chart('realtime', {
     }]
 });
 
-// Month graph
-Highcharts.chart('month', {
-    title: {
-        text: '月間の温度'
-    },
-    chart: {
-        type: 'line',
-        backgroundColor: '#FAFAFA'
-    },
-    yAxis: {
-        title: {
-            text: 'Temperature'
-        }
-    },
-    xAxis: {
-        title: {
-            text: 'Time'
-        },
-	max: 24,
-	tickInterval: 3
-    },
-    series: [{
-        name: '最大気温',
-        data: JSON.parse("[" + todayRtemp + "]")
-    }, {
-        name: '最低気温',
-        data: JSON.parse("[" + todayAtemp + "]")
-    }, {
-        name: '平均気温',
-        data: JSON.parse("[" + todayAtemp + "]")
-    }],
-});
-
-function googleSignIn(googleUser) {
-  var id_token = googleUser.getAuthResponse().id_token;
-  AWS.config.update({
-    region: 'ap-northeast-1',
-    credentials: new AWS.CognitoIdentityCredentials({
-      IdentityPoolId: tonitor.poolId,
-      Logins: {
-        'accounts.google.com': id_token
-      }
-    })
-  })
-}
-
-tonitor.awsRefresh = function() {
-  var deferred = new $.Deferred();
-  AWS.config.credentials.refresh(function(err) {
-    if (err) {
-      deferred.reject(err);
-    } else {
-      deferred.resolve(AWS.config.credentials.identityId);
-    }
-  });
-  return deferred.promise();
-}
-
-tonitor.identity = new $.Deferred();
-
-//tonitor.identity.resolve({
-//  id: id,
-//  email: googleUser.getBasicProfile().getEmail(),
-//  refresh: refresh
-//});
+// // Month graph
+// Highcharts.chart('month', {
+//     title: {
+//         text: '月間の温度'
+//     },
+//     chart: {
+//         type: 'line',
+//         backgroundColor: '#FAFAFA'
+//     },
+//     yAxis: {
+//         title: {
+//             text: 'Temperature'
+//         }
+//     },
+//     xAxis: {
+//         title: {
+//             text: 'Time'
+//         },
+// 	max: 24,
+// 	tickInterval: 3
+//     },
+//     series: [{
+//         name: '最大気温',
+//         data: JSON.parse("[" + todayRtemp + "]")
+//     }, {
+//         name: '最低気温',
+//         data: JSON.parse("[" + todayAtemp + "]")
+//     }, {
+//         name: '平均気温',
+//         data: JSON.parse("[" + todayAtemp + "]")
+//     }],
+// });
 
